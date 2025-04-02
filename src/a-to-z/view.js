@@ -22,7 +22,7 @@ export default function View() {
         window.history.replaceState({}, '', `${window.location.pathname}${seperator}${params.toString()}`);
     };
 
-    const letters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    const letters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ#');
 
     return (
         <>
@@ -34,13 +34,29 @@ export default function View() {
                             <input className="form-control" aria-label="Search the index" id="program-search" name="search" type="search" value={searchTerm} onChange={(e) => handleFilterChange('search', e.target.value, setSearchTerm)} placeholder="Search the index" />
                             <label for="program-search">Search the index</label>
                         </div>
-                        <div className="alphabet-filter">
+                        <div className="a-to-z-index-alphabet-filter">
                             {letters.map((letter, index) => (
-                                <div className="alphabet-filter-letter" key={index}>
-                                    <button className="alphabet-filter-letter-button">{letter}</button>
+                                <div className="a-to-z-index-alphabet-filter-letter" key={index}>
+                                    <button href={letter} className="a-to-z-index-alphabet-filter-letter-button">{letter}</button>
                                 </div>
                             ))}
                         </div>
+                    </div>
+                    <div className="a-to-z-index-sections">
+                        {letters.map((letter, index) => (
+                            <div id={letter} className="a-to-z-index-section" key={index}>
+                                <div className="a-to-z-index-section-drop-cap">
+                                    <div className="a-to-z-index-section-drop-cap-letter">{letter}</div>
+                                </div>
+                                <div className="a-to-z-index-section-list">
+                                    <ul>
+                                        {Array.from({ length: 25 }, () =>
+                                            <li>{Math.random().toString(36).substring(2, 10)}</li>
+                                        )}
+                                    </ul>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

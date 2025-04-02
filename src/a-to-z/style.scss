@@ -68,32 +68,32 @@ label {
   position: relative;
   gap: 16px;
   padding: 30px 20px 0;
-  z-index: 1;
 }
 
-@media screen and (min-width: 960px) {
+@media screen and (min-width: 600px) {
   .a-to-z-index-filters {
-    grid-template-columns: repeat(4, 1fr) auto;
     align-items: center;
     padding: 30px 30px 0;
   }
 }
 
-.alphabet-filter {
+.a-to-z-index-alphabet-filter {
 	display: flex;
-	// flex-wrap: wrap;
-	gap: 10px;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin: 20px 0;
 }
 
-.alphabet-filter-letter {
-	flex-grow: 1;
+.a-to-z-index-alphabet-filter-letter {
+	// flex-grow: 1;
 	text-align: center;
 }
 
-.alphabet-filter-letter-button {
+.a-to-z-index-alphabet-filter-letter-button {
 	width: 50px;
 	height: 50px;
-	font-size: 2rem;
+	font-size: var(--wp--preset--font-size--medium);
+	font-weight: var(--wp--custom--font-weight--medium);
 	background-color: unset;
 	border: none;
 	border-radius: 4px;
@@ -105,13 +105,52 @@ label {
 	}
 }
 
-// .drop-cap {
-	// font-size: 100px;
-	// font-weight: var(--wp--custom--font-weight--black);
-	// line-height: var(--wp--custom--line-height--heading);
-	// color: #ff8200;
-	// position: relative;
-	// display: inline-block;
-	// text-transform: uppercase;
-	// -webkit-text-stroke: 3px #333;
-// }
+.a-to-z-index-sections {
+	max-width: var(--wp--style--global--content-size);
+	margin: 80px auto 0;
+}
+
+.a-to-z-index-section {
+	gap: 45px;
+	margin: 0 0 65px;
+}
+
+@media screen and (min-width: 600px) {
+	.a-to-z-index-section {
+		display: flex;
+	}	
+}
+
+.a-to-z-index-section-drop-cap {
+	text-align: right;
+}
+
+@media screen and (min-width: 600px) {
+	.a-to-z-index-section-drop-cap {
+		width: 200px;
+	}	
+}
+
+.a-to-z-index-section-drop-cap-letter {
+	font-size: 100px;
+	font-weight: var(--wp--custom--font-weight--black);
+	line-height: var(--wp--custom--line-height--heading);
+	color: #ff8200;
+	position: relative;
+	display: inline-block;
+	text-transform: uppercase;
+	-webkit-text-stroke: 3px #333;
+}
+
+.a-to-z-index-section-list {
+	width: 100%;
+	padding: 0 0 65px 65px;
+	border-top: 4px solid var(--wp--preset--color--orange);
+}
+
+@media screen and (min-width: 600px) {
+	.a-to-z-index-section-list {
+		border-top: none;
+		border-left: 4px solid var(--wp--preset--color--orange);
+	}	
+}
