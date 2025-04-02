@@ -4,7 +4,7 @@
  */
 
  function a_to_z_render_callback() {
-    return '<div class="a-to-z-container" id="alpha"></div>';
+    return '<div class="a-to-z-container alignfull" id="alpha"></div>';
 }
 
 // Output the rendered HTML

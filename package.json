@@ -16,6 +16,7 @@
 		"start": "wp-scripts start --webpack-copy-php --blocks-manifest"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.14.0"
+		"@wordpress/scripts": "^30.14.0",
+		"bootstrap": "^5.3.3"
 	}
 }
