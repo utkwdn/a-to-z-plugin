@@ -24,6 +24,27 @@ export default function View() {
 
     const letters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ#');
 
+    const departments = [
+        "Academic Appeals",
+        "Academic Calendars",
+        "Academic Inclusive Initiatives",
+        "Academic Success Center",
+        "Access and Engagement at the College of Communication and Information",
+        "Access and Engagement at the College of Education, Health, and Human Sciences",
+        "Access and Engagement at the Herbert College of Agriculture",
+        "Access and Engagement, Division of",
+        "Accessible Information, Materials, and Technology",
+        "Accounting and Information Management, Department of",
+        "Accounts Payable",
+        "Admissions, Graduate",
+        "Admissions, Undergraduate",
+        "Adult Learning in Professional Settings",
+        "Advanced Microscopy and Imaging Center",
+        "Advancement, Office of",
+        "Advertising and Public Relations, School of",
+        "Advising, Undergraduate",
+    ]
+
     return (
         <>
             <div className="wp-block-block alignfull utkwds-orange-bar-texture has-orange-background-color has-background" />
@@ -37,7 +58,7 @@ export default function View() {
                         <div className="a-to-z-index-alphabet-filter">
                             {letters.map((letter, index) => (
                                 <div className="a-to-z-index-alphabet-filter-letter" key={index}>
-                                    <button href={letter} className="a-to-z-index-alphabet-filter-letter-button">{letter}</button>
+                                    <a href={`#${letter}`} className="a-to-z-index-alphabet-filter-letter-button">{letter}</a>
                                 </div>
                             ))}
                         </div>
@@ -48,11 +69,13 @@ export default function View() {
                                 <div className="a-to-z-index-section-drop-cap">
                                     <div className="a-to-z-index-section-drop-cap-letter">{letter}</div>
                                 </div>
-                                <div className="a-to-z-index-section-list">
-                                    <ul>
-                                        {Array.from({ length: 25 }, () =>
-                                            <li>{Math.random().toString(36).substring(2, 10)}</li>
-                                        )}
+                                <div className="a-to-z-index-section-content">
+                                    <ul className="a-to-z-index-section-list">
+                                        {departments.map((dept, index) => (
+                                            <li className="a-to-z-index-section-list-item">
+                                                <a href="#">{dept}</a>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>

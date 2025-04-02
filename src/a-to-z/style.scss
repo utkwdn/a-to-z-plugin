@@ -90,24 +90,36 @@ label {
 }
 
 .a-to-z-index-alphabet-filter-letter-button {
+	display: block;
 	width: 50px;
 	height: 50px;
 	font-size: var(--wp--preset--font-size--medium);
+	line-height: 50px;
 	font-weight: var(--wp--custom--font-weight--medium);
+	color: var(--wp--custom--color--river);
+	text-decoration: underline;
 	background-color: unset;
 	border: none;
 	border-radius: 4px;
+	text-decoration-thickness: auto !important;
 	
 	&:active,
 	&:hover {
 		color: var(--wp--preset--color--white);
+		text-decoration: none;
     background-color: var(--wp--custom--color--river);
 	}
 }
 
 .a-to-z-index-sections {
 	max-width: var(--wp--style--global--content-size);
-	margin: 80px auto 0;
+	margin: 40px auto 0;
+}
+
+@media screen and (min-width: 600px) {
+	.a-to-z-index-sections {
+		margin: 80px auto 0;
+	}
 }
 
 .a-to-z-index-section {
@@ -122,12 +134,13 @@ label {
 }
 
 .a-to-z-index-section-drop-cap {
-	text-align: right;
+	
 }
 
 @media screen and (min-width: 600px) {
 	.a-to-z-index-section-drop-cap {
 		width: 200px;
+		text-align: right;
 	}	
 }
 
@@ -142,15 +155,24 @@ label {
 	-webkit-text-stroke: 3px #333;
 }
 
-.a-to-z-index-section-list {
+.a-to-z-index-section-content {
 	width: 100%;
-	padding: 0 0 65px 65px;
+	padding: 30px 0;
 	border-top: 4px solid var(--wp--preset--color--orange);
 }
 
 @media screen and (min-width: 600px) {
-	.a-to-z-index-section-list {
+	.a-to-z-index-section-content {
+		padding: 0 0 65px 65px;
 		border-top: none;
 		border-left: 4px solid var(--wp--preset--color--orange);
 	}	
+}
+
+.a-to-z-index-section-list {
+	list-style: none;
+}
+
+.a-to-z-index-section-list-item {
+	margin: 0 0 30px;
 }
