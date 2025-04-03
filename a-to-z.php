@@ -19,6 +19,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Include Import Settings Page
+ */
+require_once plugin_dir_path( __FILE__ ) . 'admin/import-settings.php';
+
+/**
  * Registers the block using the metadata loaded from the `block.json` file.
  * Behind the scenes, it registers also all assets so they can be enqueued
  * through the block editor in the corresponding context.
@@ -110,7 +115,7 @@ function utk_a_to_z_register_taxes() {
 		"graphql_single_name" => "Category",
 		"graphql_plural_name" => "Category",
 	];
-	register_taxonomy( "category", [ "a_to_z" ], $args );
+	register_taxonomy( "a_to_z_category", [ "a_to_z" ], $args );
 }
 add_action( 'init', 'utk_a_to_z_register_taxes' );
 
