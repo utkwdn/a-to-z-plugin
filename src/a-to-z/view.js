@@ -47,7 +47,7 @@ export default function View() {
 
     return (
         <>
-            <div className="wp-block-block alignfull utkwds-orange-bar-texture has-orange-background-color has-background" />
+            <div className="a-to-z-container-banner wp-block-block alignfull utkwds-orange-bar-texture has-orange-background-color has-background" />
             <div className="a-to-z-index-container wp-block-group alignfull has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
                 <div className="a-to-z-index alignwide">
                     <div className="a-to-z-index-filters">
