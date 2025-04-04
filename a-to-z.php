@@ -169,3 +169,97 @@ add_action('acf/init', function() {
         ));
     }
 });
+
+
+/**
+ * Custom REST API Endpoints
+ */
+function get_a_to_z_posts_by_letter($request) {
+    global $wpdb;
+    $letters = range('A', 'Z');
+    $post_type = 'a_to_z';
+
+    // Get and sanitize the limit parameter
+    $limit = intval($request->get_param('limit'));
+    if ($limit <= 0) {
+        $limit = 5;
+    }
+
+    $results = [];
+
+    // Add non-alpha group (titles that do not start with A-Z)
+    $non_alpha_posts = $wpdb->get_results($wpdb->prepare("
+        SELECT ID, post_title 
+        FROM $wpdb->posts 
+        WHERE post_status = 'publish' 
+        AND post_type = %s 
+        AND post_title REGEXP '^[^A-Za-z]' 
+        ORDER BY post_title ASC 
+        LIMIT %d
+    ", $post_type, $limit));
+
+    $non_alpha_formatted = [];
+
+    foreach ($non_alpha_posts as $post) {
+        $a_to_z_url = get_field('a-to-z-url', $post->ID);
+        $categories = wp_get_post_terms($post->ID, 'a_to_z_category', ['fields' => 'names']);
+
+        $non_alpha_formatted[] = [
+            'ID'         => $post->ID,
+            'title'      => html_entity_decode($post->post_title, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+            'url'        => $a_to_z_url ?: '',
+            'categories' => $categories ?: [],
+        ];
+    }
+
+    if (!empty($non_alpha_formatted)) {
+        $results[] = [
+            'letter' => '#', // Use '#' for non-alpha
+            'posts'  => $non_alpha_formatted,
+        ];
+    }
+
+	// Loop through A-Z
+    foreach ($letters as $letter) {
+        $posts = $wpdb->get_results($wpdb->prepare("
+            SELECT ID, post_title 
+            FROM $wpdb->posts 
+            WHERE post_status = 'publish' 
+            AND post_type = %s 
+            AND post_title LIKE %s 
+            ORDER BY post_title ASC 
+            LIMIT %d
+        ", $post_type, $letter . '%', $limit));
+
+        $formatted_posts = [];
+
+        foreach ($posts as $post) {
+            $a_to_z_url = get_field('a-to-z-url', $post->ID);
+            $categories = wp_get_post_terms($post->ID, 'a_to_z_category', ['fields' => 'names']);
+
+            $formatted_posts[] = [
+                'ID'         => $post->ID,
+                'title'      => html_entity_decode($post->post_title, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                'url'        => $a_to_z_url ?: '',
+                'categories' => $categories ?: [],
+            ];
+        }
+
+        if (!empty($formatted_posts)) {
+            $results[] = [
+                'letter' => $letter,
+                'posts'  => $formatted_posts,
+            ];
+        }
+    }
+
+    return rest_ensure_response($results);
+}
+
+add_action('rest_api_init', function () {
+    register_rest_route('custom/v1', '/a-to-z-posts/', [
+        'methods' => 'GET',
+        'callback' => 'get_a_to_z_posts_by_letter',
+        'permission_callback' => '__return_true'
+    ]);
+});
