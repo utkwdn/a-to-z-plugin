@@ -1,8 +1,23 @@
-import React, { useState } from 'react';
+import apiFetch from '@wordpress/api-fetch';
+import React, { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
 export default function View() {
+    const [aToZItems, setAToZItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState(new URLSearchParams(window.location.search).get('search') || '');
+
+    useEffect(() => {
+        fetchAToZItems();
+    }, []);
+
+    const fetchAToZItems = async () => {
+        try {
+            const data = await apiFetch({ path: '/custom/v1/a-to-z-posts?limit=100' });
+            setAToZItems(data);
+        } catch (error) {
+            console.error('Failed to fetch A to Z items:', error);
+        }
+    };
 
     const handleFilterChange = (key, value, setter) => {
         // Update filters for fetch and display
@@ -22,29 +37,6 @@ export default function View() {
         window.history.replaceState({}, '', `${window.location.pathname}${seperator}${params.toString()}`);
     };
 
-    const letters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ#');
-
-    const departments = [
-        "Academic Appeals",
-        "Academic Calendars",
-        "Academic Inclusive Initiatives",
-        "Academic Success Center",
-        "Access and Engagement at the College of Communication and Information",
-        "Access and Engagement at the College of Education, Health, and Human Sciences",
-        "Access and Engagement at the Herbert College of Agriculture",
-        "Access and Engagement, Division of",
-        "Accessible Information, Materials, and Technology",
-        "Accounting and Information Management, Department of",
-        "Accounts Payable",
-        "Admissions, Graduate",
-        "Admissions, Undergraduate",
-        "Adult Learning in Professional Settings",
-        "Advanced Microscopy and Imaging Center",
-        "Advancement, Office of",
-        "Advertising and Public Relations, School of",
-        "Advising, Undergraduate",
-    ]
-
     return (
         <>
             <div className="a-to-z-container-banner wp-block-block alignfull utkwds-orange-bar-texture has-orange-background-color has-background" />
@@ -56,24 +48,24 @@ export default function View() {
                             <label for="program-search">Search the index</label>
                         </div>
                         <div className="a-to-z-index-alphabet-filter">
-                            {letters.map((letter, index) => (
-                                <div className="a-to-z-index-alphabet-filter-letter" key={index}>
-                                    <a href={`#${letter}`} className="a-to-z-index-alphabet-filter-letter-button">{letter}</a>
+                            {aToZItems.map((group) => (
+                                <div className="a-to-z-index-alphabet-filter-letter" key={group.letter}>
+                                    <a href={`#${group.letter}`} className="a-to-z-index-alphabet-filter-letter-button">{group.letter}</a>
                                 </div>
                             ))}
                         </div>
                     </div>
                     <div className="a-to-z-index-sections">
-                        {letters.map((letter, index) => (
-                            <div id={letter} className="a-to-z-index-section" key={index}>
+                        {aToZItems.map((group) => (
+                            <div key={group.letter} id={group.letter} className="a-to-z-index-section">
                                 <div className="a-to-z-index-section-drop-cap">
-                                    <div className="a-to-z-index-section-drop-cap-letter">{letter}</div>
+                                    <div className="a-to-z-index-section-drop-cap-letter">{group.letter}</div>
                                 </div>
                                 <div className="a-to-z-index-section-content">
                                     <ul className="a-to-z-index-section-list">
-                                        {departments.map((dept, index) => (
-                                            <li className="a-to-z-index-section-list-item">
-                                                <a href="#">{dept}</a>
+                                        {group.posts.map((item) => (
+                                            <li key={item.ID} className="a-to-z-index-section-list-item">
+                                                <a href={item.url}>{item.title}</a><br />
                                             </li>
                                         ))}
                                     </ul>
