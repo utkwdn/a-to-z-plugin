@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 export default function View() {
     const [aToZItems, setAToZItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState(new URLSearchParams(window.location.search).get('search') || '');
+    const [isBackToVisible, setIsBackToVisible] = useState(false);
 
     useEffect(() => {
         fetchAToZItems();
@@ -35,6 +36,31 @@ export default function View() {
         }
         const seperator = params.size > 0 ? '?' : '';
         window.history.replaceState({}, '', `${window.location.pathname}${seperator}${params.toString()}`);
+    };
+    
+    // Show back to top element
+    useEffect(() => {
+        const toggleVisibility = () => {
+            setIsBackToVisible(window.scrollY > 1200);
+        };
+
+        window.addEventListener("scroll", toggleVisibility);
+        return () => window.removeEventListener("scroll", toggleVisibility);
+    }, []);
+
+    const scrollToElement = () => {
+        const element = document.getElementById("alpha");
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+        }
+    };
+
+    const ChevronUpIcon = () => {
+        return (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z" />
+            </svg>
+        );
     };
 
     return (
@@ -73,6 +99,11 @@ export default function View() {
                             </div>
                         ))}
                     </div>
+                    {isBackToVisible && (
+                        <button className="a-to-z-index-back-to" onClick={scrollToElement}>
+                            <ChevronUpIcon />
+                        </button>
+                    )}
                 </div>
             </div>
         </>

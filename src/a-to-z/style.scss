@@ -16,7 +16,12 @@ $input-padding-x: 15px;
 
 // END MOVE TO UTKWDS
 
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/maps";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/forms";
 
 // MOVE TO UTKWDS
 
@@ -175,4 +180,28 @@ label {
 
 .a-to-z-index-section-list-item {
 	margin: 0 0 30px;
+}
+
+.a-to-z-index-back-to {
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  right: 20px;
+  bottom: 20px;
+  color: #fff;
+  background-color: #1a73c5;
+  border: none;
+  border-radius: 4px;
+  z-index: 1;
+
+  &:hover {
+    background-color: #0056a5;
+  }
+
+  svg {
+    width: 28px;
+    height: 28px;
+  }
 }
