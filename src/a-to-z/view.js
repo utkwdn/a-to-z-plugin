@@ -10,10 +10,23 @@ export default function View() {
     const [isBackToVisible, setIsBackToVisible] = useState(false);
     const [activeLetter, setActiveLetter] = useState(null);
     const [offset, setOffset] = useState(0);
+    const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
+    // Allow 500ms for user to finish typing before performing search
     useEffect(() => {
-        fetchAToZItems();
-    }, []);
+        const handler = setTimeout(() => {
+            setDebouncedSearch(searchTerm);
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
+
+    // Fetch data on load or whenever debouncedSearch changes
+    useEffect(() => {
+        fetchAToZItems(debouncedSearch);
+    }, [debouncedSearch]);
 
     useEffect(() => {
         const hash = window.location.hash.replace("#", "").toUpperCase();
@@ -26,9 +39,10 @@ export default function View() {
         }
     }, [aToZItems, offset, sectionRefs]);
 
-    const fetchAToZItems = async () => {
+    const fetchAToZItems = async (search = '') => {
         try {
-            const data = await apiFetch({ path: '/custom/v1/a-to-z-posts?limit=100' });
+            const query = search ? `?search=${encodeURIComponent(search)}&limit=100` : '?limit=100';
+            const data = await apiFetch({ path: `/custom/v1/a-to-z-posts${query}` });
             setAToZItems(data);
         } catch (error) {
             console.error('Failed to fetch A to Z items:', error);
