@@ -1,11 +1,15 @@
 import apiFetch from '@wordpress/api-fetch';
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
 export default function View() {
+    const alphabetRef = useRef(null);
+    const sectionRefs = useRef({});
     const [aToZItems, setAToZItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState(new URLSearchParams(window.location.search).get('search') || '');
     const [isBackToVisible, setIsBackToVisible] = useState(false);
+    const [activeLetter, setActiveLetter] = useState(null);
+    const [offset, setOffset] = useState(0);
 
     useEffect(() => {
         fetchAToZItems();
@@ -37,6 +41,39 @@ export default function View() {
         const seperator = params.size > 0 ? '?' : '';
         window.history.replaceState({}, '', `${window.location.pathname}${seperator}${params.toString()}`);
     };
+
+    useEffect(() => {
+        // if (!offset) return;
+
+        if (alphabetRef.current) {
+            console.log('height', alphabetRef.current.offsetHeight);
+            setOffset(alphabetRef.current.offsetHeight);
+        }
+    
+        const observerOptions = {
+            root: null,
+            rootMargin: `-${offset}px 0px 0px 0px`,
+            threshold: 0.5,
+        };
+    
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                console.log('entry', entry);
+                if (entry.isIntersecting) {
+                    const letter = entry.target.id;
+                    setActiveLetter(letter);
+                    console.log('letter', letter);
+                }
+            });
+        }, observerOptions);
+    
+        aToZItems.forEach((item) => {
+            const el = sectionRefs.current[item.letter];
+            if (el) observer.observe(el);
+        });
+    
+        return () => observer.disconnect();
+      }, [aToZItems, offset]);
     
     // Show back to top element
     useEffect(() => {
@@ -51,7 +88,19 @@ export default function View() {
     const scrollToElement = () => {
         const element = document.getElementById("alpha");
         if (element) {
-            element.scrollIntoView({ behavior: "smooth" });
+            window.scrollTo({ 
+                top: element.getBoundingClientRect().top + window.scrollY, 
+                behavior: "smooth" 
+            });
+        }
+    };
+
+    const handleAlphaLink = (letter) => {
+        const element = sectionRefs.current[letter];
+        if (element) {
+            const top = element.getBoundingClientRect().top + window.scrollY;
+            window.history.pushState(null, "", `#${letter}`);
+            window.scrollTo({ top: top - offset, behavior: "smooth" });
         }
     };
 
@@ -68,22 +117,28 @@ export default function View() {
             <div className="a-to-z-container-banner wp-block-block alignfull utkwds-orange-bar-texture has-orange-background-color has-background" />
             <div className="a-to-z-index-container wp-block-group alignfull has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
                 <div className="a-to-z-index alignwide">
-                    <div className="a-to-z-index-filters">
+                    <div className="a-to-z-index-input">
                         <div class="form-floating">
                             <input className="form-control" aria-label="Search the index" id="program-search" name="search" type="search" value={searchTerm} onChange={(e) => handleFilterChange('search', e.target.value, setSearchTerm)} placeholder="Search the index" />
                             <label for="program-search">Search the index</label>
                         </div>
-                        <div className="a-to-z-index-alphabet-filter">
-                            {aToZItems.map((group) => (
-                                <div className="a-to-z-index-alphabet-filter-letter" key={group.letter}>
-                                    <a href={`#${group.letter}`} className="a-to-z-index-alphabet-filter-letter-button">{group.letter}</a>
-                                </div>
-                            ))}
-                        </div>
+                    </div>
+                    <div className="a-to-z-index-alphabet" ref={alphabetRef}>
+                        {aToZItems.map((group) => (
+                            <div className="a-to-z-index-alphabet-letter" key={group.letter}>
+                                <button
+                                    // href={`#${group.letter}`}
+                                    className={`a-to-z-index-alphabet-letter-button ${
+                                        activeLetter === group.letter && "a-to-z-index-alphabet-letter-button--active"
+                                      }`}
+                                    onClick={() => handleAlphaLink(group.letter)}
+                                >{group.letter}</button>
+                            </div>
+                        ))}
                     </div>
                     <div className="a-to-z-index-sections">
                         {aToZItems.map((group) => (
-                            <div key={group.letter} id={group.letter} className="a-to-z-index-section">
+                            <div key={group.letter} id={group.letter} className="a-to-z-index-section" ref={(el) => (sectionRefs.current[group.letter] = el)}>
                                 <div className="a-to-z-index-section-drop-cap">
                                     <div className="a-to-z-index-section-drop-cap-letter">{group.letter}</div>
                                 </div>
