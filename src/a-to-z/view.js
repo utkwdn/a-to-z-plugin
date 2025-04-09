@@ -15,6 +15,17 @@ export default function View() {
         fetchAToZItems();
     }, []);
 
+    useEffect(() => {
+        const hash = window.location.hash.replace("#", "").toUpperCase();
+        if (aToZItems.length > 0) {
+            const section = sectionRefs.current[hash]?.current;
+            if (section) {
+                const top = section.getBoundingClientRect().top + window.scrollY;
+                window.scrollTo({ top: top - offset, behavior: "smooth" });
+            }
+        }
+    }, [aToZItems, offset, sectionRefs]);
+
     const fetchAToZItems = async () => {
         try {
             const data = await apiFetch({ path: '/custom/v1/a-to-z-posts?limit=100' });
