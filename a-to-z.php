@@ -179,15 +179,68 @@ function get_a_to_z_posts_by_letter($request) {
     $letters = range('A', 'Z');
     $post_type = 'a_to_z';
 
-    // Get and sanitize the limit parameter
     $limit = intval($request->get_param('limit'));
     if ($limit <= 0) {
         $limit = 5;
     }
 
+    $search = sanitize_text_field($request->get_param('search'));
     $results = [];
 
-    // Add non-alpha group (titles that do not start with A-Z)
+    if (!empty($search)) {
+        $like = '%' . $wpdb->esc_like($search) . '%';
+        $search_posts = $wpdb->get_results($wpdb->prepare("
+            SELECT ID, post_title 
+            FROM $wpdb->posts 
+            WHERE post_status = 'publish' 
+            AND post_type = %s 
+            AND (post_title LIKE %s OR post_content LIKE %s)
+            ORDER BY post_title ASC
+        ", $post_type, $like, $like));
+
+        $grouped_posts = [];
+
+        foreach ($search_posts as $post) {
+            $first_char = strtoupper(mb_substr($post->post_title, 0, 1));
+            $group_key = in_array($first_char, $letters) ? $first_char : '#';
+
+            if (!isset($grouped_posts[$group_key])) {
+                $grouped_posts[$group_key] = [];
+            }
+
+            $a_to_z_url = get_field('a-to-z-url', $post->ID);
+            $categories = wp_get_post_terms($post->ID, 'a_to_z_category', ['fields' => 'names']);
+
+            $grouped_posts[$group_key][] = [
+                'ID'         => $post->ID,
+                'title'      => html_entity_decode($post->post_title, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                'url'        => $a_to_z_url ?: '',
+                'categories' => $categories ?: [],
+            ];
+        }
+
+        foreach ($letters as $letter) {
+            if (!empty($grouped_posts[$letter])) {
+                $results[] = [
+                    'letter' => $letter,
+                    'posts'  => array_slice($grouped_posts[$letter], 0, $limit),
+                ];
+            }
+        }
+
+        if (!empty($grouped_posts['#'])) {
+            $results[] = [
+                'letter' => '#',
+                'posts'  => array_slice($grouped_posts['#'], 0, $limit),
+            ];
+        }
+
+        return rest_ensure_response($results);
+    }
+
+    // === NON-SEARCH: A-Z and Non-Alpha ===
+
+    // Non-alpha group
     $non_alpha_posts = $wpdb->get_results($wpdb->prepare("
         SELECT ID, post_title 
         FROM $wpdb->posts 
@@ -214,12 +267,12 @@ function get_a_to_z_posts_by_letter($request) {
 
     if (!empty($non_alpha_formatted)) {
         $results[] = [
-            'letter' => '#', // Use '#' for non-alpha
+            'letter' => '#',
             'posts'  => $non_alpha_formatted,
         ];
     }
 
-	// Loop through A-Z
+    // A–Z loop
     foreach ($letters as $letter) {
         $posts = $wpdb->get_results($wpdb->prepare("
             SELECT ID, post_title 

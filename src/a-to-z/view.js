@@ -5,14 +5,28 @@ import { createRoot } from 'react-dom/client';
 export default function View() {
     const [aToZItems, setAToZItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState(new URLSearchParams(window.location.search).get('search') || '');
+    const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
+    // Allow 500ms for user to finish typing before performing search
     useEffect(() => {
-        fetchAToZItems();
-    }, []);
+        const handler = setTimeout(() => {
+            setDebouncedSearch(searchTerm);
+        }, 500);
 
-    const fetchAToZItems = async () => {
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
+
+    // Fetch data on load or whenever debouncedSearch changes
+    useEffect(() => {
+        fetchAToZItems(debouncedSearch);
+    }, [debouncedSearch]);
+
+    const fetchAToZItems = async (search = '') => {
         try {
-            const data = await apiFetch({ path: '/custom/v1/a-to-z-posts?limit=100' });
+            const query = search ? `?search=${encodeURIComponent(search)}&limit=100` : '?limit=100';
+            const data = await apiFetch({ path: `/custom/v1/a-to-z-posts${query}` });
             setAToZItems(data);
         } catch (error) {
             console.error('Failed to fetch A to Z items:', error);
