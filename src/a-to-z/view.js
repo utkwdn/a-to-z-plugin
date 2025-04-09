@@ -1,10 +1,15 @@
 import apiFetch from '@wordpress/api-fetch';
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
 export default function View() {
+    const alphabetRef = useRef(null);
+    const sectionRefs = useRef({});
     const [aToZItems, setAToZItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState(new URLSearchParams(window.location.search).get('search') || '');
+    const [isBackToVisible, setIsBackToVisible] = useState(false);
+    const [activeLetter, setActiveLetter] = useState(null);
+    const [offset, setOffset] = useState(0);
     const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
     // Allow 500ms for user to finish typing before performing search
@@ -22,6 +27,17 @@ export default function View() {
     useEffect(() => {
         fetchAToZItems(debouncedSearch);
     }, [debouncedSearch]);
+
+    useEffect(() => {
+        const hash = window.location.hash.replace("#", "").toUpperCase();
+        if (aToZItems.length > 0) {
+            const section = sectionRefs.current[hash]?.current;
+            if (section) {
+                const top = section.getBoundingClientRect().top + window.scrollY;
+                window.scrollTo({ top: top - offset, behavior: "smooth" });
+            }
+        }
+    }, [aToZItems, offset, sectionRefs]);
 
     const fetchAToZItems = async (search = '') => {
         try {
@@ -51,27 +67,110 @@ export default function View() {
         window.history.replaceState({}, '', `${window.location.pathname}${seperator}${params.toString()}`);
     };
 
+    aToZItems.forEach((group) => {
+        if (!sectionRefs.current[group.letter]) {
+            sectionRefs.current[group.letter] = React.createRef();
+        }
+    });
+
+    useEffect(() => {
+        if (alphabetRef.current) {
+            const adminBar = document.getElementById('wpadminbar');
+            let adminBarOffset = 0;
+
+            if (adminBar && window.innerWidth > 600) {
+                adminBarOffset = adminBar.offsetHeight;
+            }
+
+            setOffset(alphabetRef.current.offsetHeight + adminBarOffset);
+        }
+
+        const observerOptions = {
+            root: null,
+            rootMargin: `-${alphabetRef.current.offsetHeight}px 0px -60% 0px`,
+            threshold: 0,
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const letter = entry.target.id;
+                    setActiveLetter(letter);
+                }
+            });
+        }, observerOptions);
+
+        aToZItems.forEach((group) => {
+            const section = sectionRefs.current[group.letter].current;
+            if (section) observer.observe(section);
+        });
+
+        return () => observer.disconnect();
+    }, [aToZItems]);
+
+    // Show back to top element
+    useEffect(() => {
+        const toggleVisibility = () => {
+            setIsBackToVisible(window.scrollY > 1200);
+        };
+
+        window.addEventListener("scroll", toggleVisibility);
+        return () => window.removeEventListener("scroll", toggleVisibility);
+    }, []);
+
+    const scrollToElement = () => {
+        const element = document.getElementById("alpha");
+        if (element) {
+            window.scrollTo({
+                top: element.getBoundingClientRect().top + window.scrollY,
+                behavior: "smooth"
+            });
+        }
+    };
+
+    const scrollToSection = (letter) => {
+        const section = sectionRefs.current[letter]?.current;
+        if (section) {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            history.replaceState(null, "", window.location.pathname + window.location.search + `#${letter}`);
+            window.scrollTo({ top: top - offset, behavior: "smooth" });
+        }
+    };
+
+    const ChevronUpIcon = () => {
+        return (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z" />
+            </svg>
+        );
+    };
+
     return (
         <>
             <div className="a-to-z-container-banner wp-block-block alignfull utkwds-orange-bar-texture has-orange-background-color has-background" />
             <div className="a-to-z-index-container wp-block-group alignfull has-global-padding is-layout-constrained wp-block-group-is-layout-constrained">
                 <div className="a-to-z-index alignwide">
-                    <div className="a-to-z-index-filters">
+                    <div className="a-to-z-index-input">
                         <div class="form-floating">
                             <input className="form-control" aria-label="Search the index" id="program-search" name="search" type="search" value={searchTerm} onChange={(e) => handleFilterChange('search', e.target.value, setSearchTerm)} placeholder="Search the index" />
                             <label for="program-search">Search the index</label>
                         </div>
-                        <div className="a-to-z-index-alphabet-filter">
-                            {aToZItems.map((group) => (
-                                <div className="a-to-z-index-alphabet-filter-letter" key={group.letter}>
-                                    <a href={`#${group.letter}`} className="a-to-z-index-alphabet-filter-letter-button">{group.letter}</a>
-                                </div>
-                            ))}
-                        </div>
+                    </div>
+                    <div className="a-to-z-index-alphabet" ref={alphabetRef}>
+                        {aToZItems.map((group) => (
+                            <div className="a-to-z-index-alphabet-letter" key={group.letter}>
+                                <button
+                                    // href={`#${group.letter}`}
+                                    className={`a-to-z-index-alphabet-letter-button ${activeLetter === group.letter && "a-to-z-index-alphabet-letter-button--active"
+                                        }`}
+                                    onClick={() => scrollToSection(group.letter)}
+                                >{group.letter}</button>
+                            </div>
+                        ))}
                     </div>
                     <div className="a-to-z-index-sections">
                         {aToZItems.map((group) => (
-                            <div key={group.letter} id={group.letter} className="a-to-z-index-section">
+                            <div key={group.letter} id={group.letter} className="a-to-z-index-section" ref={sectionRefs.current[group.letter]}>
                                 <div className="a-to-z-index-section-drop-cap">
                                     <div className="a-to-z-index-section-drop-cap-letter">{group.letter}</div>
                                 </div>
@@ -87,6 +186,11 @@ export default function View() {
                             </div>
                         ))}
                     </div>
+                    {isBackToVisible && (
+                        <button className="a-to-z-index-back-to" onClick={scrollToElement}>
+                            <ChevronUpIcon />
+                        </button>
+                    )}
                 </div>
             </div>
         </>

@@ -16,7 +16,12 @@ $input-padding-x: 15px;
 
 // END MOVE TO UTKWDS
 
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/maps";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/forms";
 
 // MOVE TO UTKWDS
 
@@ -54,42 +59,56 @@ label {
 }
 
 .a-to-z-container-banner {
-    height: 200px;
+	height: 200px;
 }
 
 // END MOVE TO UTKWDS
 
 .a-to-z-index {
-  margin-top: -120px !important;
+  margin-top: -150px !important;
   background: #fff;
 }
 
-.a-to-z-index-filters {
-  position: relative;
-  gap: 16px;
-  padding: 30px 20px 0;
+.a-to-z-index-input {
+  padding: 20px 20px 0;
 }
 
 @media screen and (min-width: 600px) {
-  .a-to-z-index-filters {
+  .a-to-z-index-input {
     align-items: center;
     padding: 30px 30px 0;
   }
 }
 
-.a-to-z-index-alphabet-filter {
+.a-to-z-index-alphabet {
+	position: sticky;
+	top: 0;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	margin: 20px 0;
+	padding: 10px 0;
+	background: #fff;
+	border-bottom: 4px solid var(--wp--preset--color--orange);
+	z-index: 1;
 }
 
-.a-to-z-index-alphabet-filter-letter {
+@media screen and (min-width: 600px) {
+  .a-to-z-index-alphabet {
+    padding: 25px 0 30px 0;
+		border-bottom: none;
+
+		.admin-bar & {
+			top: 32px;
+		}
+  }
+}
+
+.a-to-z-index-alphabet-letter {
 	// flex-grow: 1;
 	text-align: center;
 }
 
-.a-to-z-index-alphabet-filter-letter-button {
+.a-to-z-index-alphabet-letter-button {
 	display: block;
 	width: 50px;
 	height: 50px;
@@ -103,6 +122,7 @@ label {
 	border-radius: 4px;
 	text-decoration-thickness: auto !important;
 	
+	&.a-to-z-index-alphabet-letter-button--active,
 	&:active,
 	&:hover {
 		color: var(--wp--preset--color--white);
@@ -130,6 +150,7 @@ label {
 @media screen and (min-width: 600px) {
 	.a-to-z-index-section {
 		display: flex;
+		margin: 0 0 100px;
 	}	
 }
 
@@ -158,7 +179,7 @@ label {
 .a-to-z-index-section-content {
 	width: 100%;
 	padding: 30px 0;
-	border-top: 4px solid var(--wp--preset--color--orange);
+	// border-top: 4px solid var(--wp--preset--color--orange);
 }
 
 @media screen and (min-width: 600px) {
@@ -175,4 +196,32 @@ label {
 
 .a-to-z-index-section-list-item {
 	margin: 0 0 30px;
+
+	&:last-child {
+		margin: 0;
+	}
+}
+
+.a-to-z-index-back-to {
+  position: fixed;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  right: 20px;
+  bottom: 20px;
+  color: #fff;
+  background-color: #1a73c5;
+  border: none;
+  border-radius: 4px;
+  z-index: 1;
+
+  &:hover {
+    background-color: #0056a5;
+  }
+
+  svg {
+    width: 28px;
+    height: 28px;
+  }
 }
