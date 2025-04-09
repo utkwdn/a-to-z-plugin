@@ -42,39 +42,47 @@ export default function View() {
         window.history.replaceState({}, '', `${window.location.pathname}${seperator}${params.toString()}`);
     };
 
-    useEffect(() => {
-        // if (!offset) return;
-
-        if (alphabetRef.current) {
-            console.log('height', alphabetRef.current.offsetHeight);
-            setOffset(alphabetRef.current.offsetHeight);
+    aToZItems.forEach((group) => {
+        if (!sectionRefs.current[group.letter]) {
+            sectionRefs.current[group.letter] = React.createRef();
         }
-    
+    });
+
+    useEffect(() => {
+        if (alphabetRef.current) {
+            const adminBar = document.getElementById('wpadminbar');
+            let adminBarOffset = 0;
+
+            if (adminBar && window.innerWidth > 600) {
+                adminBarOffset = adminBar.offsetHeight;
+            }
+
+            setOffset(alphabetRef.current.offsetHeight + adminBarOffset);
+        }
+
         const observerOptions = {
             root: null,
-            rootMargin: `-${offset}px 0px 0px 0px`,
-            threshold: 0.5,
+            rootMargin: `-${alphabetRef.current.offsetHeight}px 0px -60% 0px`,
+            threshold: 0,
         };
-    
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                console.log('entry', entry);
                 if (entry.isIntersecting) {
                     const letter = entry.target.id;
                     setActiveLetter(letter);
-                    console.log('letter', letter);
                 }
             });
         }, observerOptions);
-    
-        aToZItems.forEach((item) => {
-            const el = sectionRefs.current[item.letter];
-            if (el) observer.observe(el);
+
+        aToZItems.forEach((group) => {
+            const section = sectionRefs.current[group.letter].current;
+            if (section) observer.observe(section);
         });
-    
+
         return () => observer.disconnect();
-      }, [aToZItems, offset]);
-    
+    }, [aToZItems]);
+
     // Show back to top element
     useEffect(() => {
         const toggleVisibility = () => {
@@ -88,18 +96,18 @@ export default function View() {
     const scrollToElement = () => {
         const element = document.getElementById("alpha");
         if (element) {
-            window.scrollTo({ 
-                top: element.getBoundingClientRect().top + window.scrollY, 
-                behavior: "smooth" 
+            window.scrollTo({
+                top: element.getBoundingClientRect().top + window.scrollY,
+                behavior: "smooth"
             });
         }
     };
 
-    const handleAlphaLink = (letter) => {
-        const element = sectionRefs.current[letter];
-        if (element) {
-            const top = element.getBoundingClientRect().top + window.scrollY;
-            window.history.pushState(null, "", `#${letter}`);
+    const scrollToSection = (letter) => {
+        const section = sectionRefs.current[letter]?.current;
+        if (section) {
+            const top = section.getBoundingClientRect().top + window.scrollY;
+            history.replaceState(null, "", window.location.pathname + window.location.search + `#${letter}`);
             window.scrollTo({ top: top - offset, behavior: "smooth" });
         }
     };
@@ -128,17 +136,16 @@ export default function View() {
                             <div className="a-to-z-index-alphabet-letter" key={group.letter}>
                                 <button
                                     // href={`#${group.letter}`}
-                                    className={`a-to-z-index-alphabet-letter-button ${
-                                        activeLetter === group.letter && "a-to-z-index-alphabet-letter-button--active"
-                                      }`}
-                                    onClick={() => handleAlphaLink(group.letter)}
+                                    className={`a-to-z-index-alphabet-letter-button ${activeLetter === group.letter && "a-to-z-index-alphabet-letter-button--active"
+                                        }`}
+                                    onClick={() => scrollToSection(group.letter)}
                                 >{group.letter}</button>
                             </div>
                         ))}
                     </div>
                     <div className="a-to-z-index-sections">
                         {aToZItems.map((group) => (
-                            <div key={group.letter} id={group.letter} className="a-to-z-index-section" ref={(el) => (sectionRefs.current[group.letter] = el)}>
+                            <div key={group.letter} id={group.letter} className="a-to-z-index-section" ref={sectionRefs.current[group.letter]}>
                                 <div className="a-to-z-index-section-drop-cap">
                                     <div className="a-to-z-index-section-drop-cap-letter">{group.letter}</div>
                                 </div>

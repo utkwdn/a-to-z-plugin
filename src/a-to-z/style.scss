@@ -150,6 +150,7 @@ label {
 @media screen and (min-width: 600px) {
 	.a-to-z-index-section {
 		display: flex;
+		margin: 0 0 100px;
 	}	
 }
 
@@ -195,6 +196,10 @@ label {
 
 .a-to-z-index-section-list-item {
 	margin: 0 0 30px;
+
+	&:last-child {
+		margin: 0;
+	}
 }
 
 .a-to-z-index-back-to {
