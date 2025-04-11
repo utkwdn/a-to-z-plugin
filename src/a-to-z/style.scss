@@ -96,7 +96,7 @@ label {
 	flex-wrap: wrap;
 	justify-content: center;
 	min-height: 105px;
-	padding: 10px 0;
+	padding: 10px 5px 10px;
 	background: #fff;
 	border-bottom: 4px solid var(--wp--preset--color--orange);
 	z-index: 1;
@@ -158,6 +158,35 @@ button.a-to-z-index-alphabet-letter-button {
 	.a-to-z-index-sections {
 		margin: 80px auto 0;
 	}
+}
+
+.a-to-z-index-no-results {
+	padding: 40px 20px;
+}
+
+@media screen and (min-width: 600px) {
+	.a-to-z-index-no-results {
+		padding: 60px 20px;
+	}
+}
+
+.a-to-z-index-no-results-content {
+	max-width: 750px;
+  margin: 0 auto;
+	text-align: center;
+  
+  h2 {
+		margin: 0;
+    font-weight: var(--wp--custom--font-weight--black);
+    line-height: var(--wp--custom--line-height--heading);
+  }	
+}
+
+.a-to-z-index-no-results-footer {
+	max-width: var(--wp--style--global--content-size);
+	margin: 40px auto 0;
+	padding: 20px 0 0;
+	border-top: 1px solid var(--wp--preset--color--gray-2);
 }
 
 .a-to-z-index-section {

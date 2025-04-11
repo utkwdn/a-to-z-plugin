@@ -78,16 +78,16 @@ export default function View() {
     });
 
     useEffect(() => {
-        if (alphabetRef.current) {
-            const adminBar = document.getElementById('wpadminbar');
-            let adminBarOffset = 0;
+        if (!alphabetRef.current) return;
 
-            if (adminBar && window.innerWidth > 600) {
-                adminBarOffset = adminBar.offsetHeight;
-            }
+        const adminBar = document.getElementById('wpadminbar');
+        let adminBarOffset = 0;
 
-            setOffset(alphabetRef.current.offsetHeight + adminBarOffset);
+        if (adminBar && window.innerWidth > 600) {
+            adminBarOffset = adminBar.offsetHeight;
         }
+
+        setOffset(alphabetRef.current.offsetHeight + adminBarOffset);
 
         const observerOptions = {
             root: null,
@@ -169,15 +169,19 @@ export default function View() {
                             <label for="program-search">Search the index</label>
                         </div>
                     </div>
-                    <div className={`a-to-z-index-alphabet${isSticky ? " a-to-z-index-alphabet--fixed" : ""}`} ref={alphabetRef}>
-                        {isLoading ? (
-                            [...Array(20)].map(() => (
+                    {isLoading ? (
+                        <div className="a-to-z-index-alphabet">
+                            {[...Array(20)].map(() => (
                                 <div class="placeholder-glow">
                                     <span class="a-to-z-index-alphabet-letter-button placeholder"></span>
                                 </div>
-                            ))
-                        ) : (
-                            aToZItems.map((group) => (
+                            ))}
+                        </div>
+                    ) : aToZItems.length === 0 && !isLoading ? (
+                        <></>
+                    ) : (
+                        <div className={`a-to-z-index-alphabet${isSticky ? " a-to-z-index-alphabet--fixed" : ""}`} ref={alphabetRef}>
+                            {aToZItems.map((group) => (
                                 <div className="a-to-z-index-alphabet-letter" key={group.letter}>
                                     <button
                                         // href={`#${group.letter}`}
@@ -186,12 +190,12 @@ export default function View() {
                                         onClick={() => scrollToSection(group.letter)}
                                     >{group.letter}</button>
                                 </div>
-                            ))
-                        )}
-                    </div>
-                    <div className="a-to-z-index-sections">
-                        {isLoading ? (
-                            [...Array(2)].map((e, i) => (
+                            ))}
+                        </div>
+                    )}
+                    {isLoading ? (
+                        <div className="a-to-z-index-sections">
+                            {[...Array(2)].map((e, i) => (
                                 <div key={i} className="a-to-z-index-section">
                                     <div className="a-to-z-index-section-drop-cap">
                                         <div className="a-to-z-index-section-drop-cap-letter placeholder-glow">
@@ -208,11 +212,26 @@ export default function View() {
                                         </ul>
                                     </div>
                                 </div>
-                            ))
-                        ) : aToZItems.length === 0 && !isLoading ? (
-                            <p>No results</p>
-                        ) : (
-                            aToZItems.map((group) => (
+                            ))}
+                        </div>
+                    ) : aToZItems.length === 0 && !isLoading ? (
+                        <div className="a-to-z-index-no-results">
+                            <div className="a-to-z-index-no-results-content">
+                                <h2>There are no matches for your search.</h2>
+                                <p>Try searching again with different terms.</p>
+                                <p class="is-style-utkwds-cta-link">
+                                    <a href="https://www.utk.edu/">Search all of utk.edu</a>
+                                </p>
+                            </div>
+                            <div className="a-to-z-index-no-results-footer">
+                                <p class="is-style-utkwds-cta-link">
+                                    <a href="https://communications.utk.edu/a-z-index-update-request/">Request an update to the index</a>
+                                </p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="a-to-z-index-sections">
+                            {aToZItems.map((group) => (
                                 <div key={group.letter} id={group.letter} className="a-to-z-index-section" ref={sectionRefs.current[group.letter]}>
                                     <div className="a-to-z-index-section-drop-cap">
                                         <div className="a-to-z-index-section-drop-cap-letter">{group.letter}</div>
@@ -227,9 +246,9 @@ export default function View() {
                                         </ul>
                                     </div>
                                 </div>
-                            ))
-                        )}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                     {isBackToVisible && (
                         <button className="a-to-z-index-back-to" onClick={scrollToElement}>
                             <ChevronUpIcon />
