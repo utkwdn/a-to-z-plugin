@@ -22,6 +22,7 @@ $input-padding-x: 15px;
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/root";
 @import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/placeholders";
 
 // MOVE TO UTKWDS
 
@@ -58,6 +59,15 @@ label {
     }
 }
 
+.placeholder {
+	color: #d9d9d9 !important;
+	border-radius: 4px;
+
+	&-lg {
+    min-height: 32px;
+  }
+}
+
 .a-to-z-container-banner {
 	height: 200px;
 }
@@ -81,20 +91,25 @@ label {
 }
 
 .a-to-z-index-alphabet {
-	position: sticky;
 	top: 0;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	padding: 10px 0;
+	min-height: 105px;
+	padding: 10px 5px 10px;
 	background: #fff;
 	border-bottom: 4px solid var(--wp--preset--color--orange);
 	z-index: 1;
+
+	&--fixed {
+		position: sticky;
+	}
 }
 
 @media screen and (min-width: 600px) {
   .a-to-z-index-alphabet {
-    padding: 25px 0 30px 0;
+		gap: 10px;
+    padding: 25px 10px 30px;
 		border-bottom: none;
 
 		.admin-bar & {
@@ -117,11 +132,10 @@ label {
 	font-weight: var(--wp--custom--font-weight--medium);
 	color: var(--wp--custom--color--river);
 	text-decoration: underline;
-	background-color: unset;
 	border: none;
 	border-radius: 4px;
 	text-decoration-thickness: auto !important;
-	
+
 	&.a-to-z-index-alphabet-letter-button--active,
 	&:active,
 	&:hover {
@@ -129,6 +143,10 @@ label {
 		text-decoration: none;
     background-color: var(--wp--custom--color--river);
 	}
+}
+
+button.a-to-z-index-alphabet-letter-button {
+	background-color: unset;
 }
 
 .a-to-z-index-sections {
@@ -140,6 +158,35 @@ label {
 	.a-to-z-index-sections {
 		margin: 80px auto 0;
 	}
+}
+
+.a-to-z-index-no-results {
+	padding: 40px 20px;
+}
+
+@media screen and (min-width: 600px) {
+	.a-to-z-index-no-results {
+		padding: 60px 20px;
+	}
+}
+
+.a-to-z-index-no-results-content {
+	max-width: 750px;
+  margin: 0 auto;
+	text-align: center;
+  
+  h2 {
+		margin: 0;
+    font-weight: var(--wp--custom--font-weight--black);
+    line-height: var(--wp--custom--line-height--heading);
+  }	
+}
+
+.a-to-z-index-no-results-footer {
+	max-width: var(--wp--style--global--content-size);
+	margin: 40px auto 0;
+	padding: 20px 0 0;
+	border-top: 1px solid var(--wp--preset--color--gray-2);
 }
 
 .a-to-z-index-section {

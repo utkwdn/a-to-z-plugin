@@ -5,10 +5,12 @@ import { createRoot } from 'react-dom/client';
 export default function View() {
     const alphabetRef = useRef(null);
     const sectionRefs = useRef({});
+    const [isLoading, setIsLoading] = useState(true);
     const [aToZItems, setAToZItems] = useState([]);
     const [searchTerm, setSearchTerm] = useState(new URLSearchParams(window.location.search).get('search') || '');
     const [isBackToVisible, setIsBackToVisible] = useState(false);
     const [activeLetter, setActiveLetter] = useState(null);
+    const [isSticky, setIsSticky] = useState(false);
     const [offset, setOffset] = useState(0);
     const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
@@ -46,6 +48,8 @@ export default function View() {
             setAToZItems(data);
         } catch (error) {
             console.error('Failed to fetch A to Z items:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -74,16 +78,16 @@ export default function View() {
     });
 
     useEffect(() => {
-        if (alphabetRef.current) {
-            const adminBar = document.getElementById('wpadminbar');
-            let adminBarOffset = 0;
+        if (!alphabetRef.current) return;
 
-            if (adminBar && window.innerWidth > 600) {
-                adminBarOffset = adminBar.offsetHeight;
-            }
+        const adminBar = document.getElementById('wpadminbar');
+        let adminBarOffset = 0;
 
-            setOffset(alphabetRef.current.offsetHeight + adminBarOffset);
+        if (adminBar && window.innerWidth > 600) {
+            adminBarOffset = adminBar.offsetHeight;
         }
+
+        setOffset(alphabetRef.current.offsetHeight + adminBarOffset);
 
         const observerOptions = {
             root: null,
@@ -108,16 +112,6 @@ export default function View() {
         return () => observer.disconnect();
     }, [aToZItems]);
 
-    // Show back to top element
-    useEffect(() => {
-        const toggleVisibility = () => {
-            setIsBackToVisible(window.scrollY > 1200);
-        };
-
-        window.addEventListener("scroll", toggleVisibility);
-        return () => window.removeEventListener("scroll", toggleVisibility);
-    }, []);
-
     const scrollToElement = () => {
         const element = document.getElementById("alpha");
         if (element) {
@@ -127,6 +121,25 @@ export default function View() {
             });
         }
     };
+
+    useEffect(() => {
+        const handleScroll = () => {
+            // Back to top visibility
+            setIsBackToVisible(window.scrollY > 1200);
+    
+            // Sticky alphabet
+            if (alphabetRef.current) {
+                const adminBar = document.getElementById("wpadminbar");
+                const rect = alphabetRef.current.getBoundingClientRect();
+                let offset = adminBar ? adminBar.offsetHeight : 0;
+    
+                setIsSticky(rect.top <= offset);
+            }
+        };
+    
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const scrollToSection = (letter) => {
         const section = sectionRefs.current[letter]?.current;
@@ -156,36 +169,86 @@ export default function View() {
                             <label for="program-search">Search the index</label>
                         </div>
                     </div>
-                    <div className="a-to-z-index-alphabet" ref={alphabetRef}>
-                        {aToZItems.map((group) => (
-                            <div className="a-to-z-index-alphabet-letter" key={group.letter}>
-                                <button
-                                    // href={`#${group.letter}`}
-                                    className={`a-to-z-index-alphabet-letter-button ${activeLetter === group.letter && "a-to-z-index-alphabet-letter-button--active"
-                                        }`}
-                                    onClick={() => scrollToSection(group.letter)}
-                                >{group.letter}</button>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="a-to-z-index-sections">
-                        {aToZItems.map((group) => (
-                            <div key={group.letter} id={group.letter} className="a-to-z-index-section" ref={sectionRefs.current[group.letter]}>
-                                <div className="a-to-z-index-section-drop-cap">
-                                    <div className="a-to-z-index-section-drop-cap-letter">{group.letter}</div>
+                    {isLoading ? (
+                        <div className="a-to-z-index-alphabet">
+                            {[...Array(20)].map(() => (
+                                <div class="placeholder-glow">
+                                    <span class="a-to-z-index-alphabet-letter-button placeholder"></span>
                                 </div>
-                                <div className="a-to-z-index-section-content">
-                                    <ul className="a-to-z-index-section-list">
-                                        {group.posts.map((item) => (
-                                            <li key={item.ID} className="a-to-z-index-section-list-item">
-                                                <a href={item.url}>{item.title}</a><br />
-                                            </li>
-                                        ))}
-                                    </ul>
+                            ))}
+                        </div>
+                    ) : aToZItems.length === 0 && !isLoading ? (
+                        <></>
+                    ) : (
+                        <div className={`a-to-z-index-alphabet${isSticky ? " a-to-z-index-alphabet--fixed" : ""}`} ref={alphabetRef}>
+                            {aToZItems.map((group) => (
+                                <div className="a-to-z-index-alphabet-letter" key={group.letter}>
+                                    <button
+                                        // href={`#${group.letter}`}
+                                        className={`a-to-z-index-alphabet-letter-button ${activeLetter === group.letter && "a-to-z-index-alphabet-letter-button--active"
+                                            }`}
+                                        onClick={() => scrollToSection(group.letter)}
+                                    >{group.letter}</button>
                                 </div>
+                            ))}
+                        </div>
+                    )}
+                    {isLoading ? (
+                        <div className="a-to-z-index-sections">
+                            {[...Array(2)].map((e, i) => (
+                                <div key={i} className="a-to-z-index-section">
+                                    <div className="a-to-z-index-section-drop-cap">
+                                        <div className="a-to-z-index-section-drop-cap-letter placeholder-glow">
+                                            <span className="placeholder" style={{ width: 100 }}></span>
+                                        </div>
+                                    </div>
+                                    <div className="a-to-z-index-section-content">
+                                        <ul className="a-to-z-index-section-list">
+                                            {[...Array(5)].map((e, i) => (
+                                                <li key={i} className="a-to-z-index-section-list-item placeholder-glow">
+                                                    <a className="placeholder placeholder-lg" style={{ width: `100%` }}></a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : aToZItems.length === 0 && !isLoading ? (
+                        <div className="a-to-z-index-no-results">
+                            <div className="a-to-z-index-no-results-content">
+                                <h2>There are no matches for your search.</h2>
+                                <p>Try searching again with different terms.</p>
+                                <p class="is-style-utkwds-cta-link">
+                                    <a href="https://www.utk.edu/">Search all of utk.edu</a>
+                                </p>
                             </div>
-                        ))}
-                    </div>
+                            <div className="a-to-z-index-no-results-footer">
+                                <p class="is-style-utkwds-cta-link">
+                                    <a href="https://communications.utk.edu/a-z-index-update-request/">Request an update to the index</a>
+                                </p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="a-to-z-index-sections">
+                            {aToZItems.map((group) => (
+                                <div key={group.letter} id={group.letter} className="a-to-z-index-section" ref={sectionRefs.current[group.letter]}>
+                                    <div className="a-to-z-index-section-drop-cap">
+                                        <div className="a-to-z-index-section-drop-cap-letter">{group.letter}</div>
+                                    </div>
+                                    <div className="a-to-z-index-section-content">
+                                        <ul className="a-to-z-index-section-list">
+                                            {group.posts.map((item) => (
+                                                <li key={item.ID} className="a-to-z-index-section-list-item">
+                                                    <a href={item.url}>{item.title}</a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     {isBackToVisible && (
                         <button className="a-to-z-index-back-to" onClick={scrollToElement}>
                             <ChevronUpIcon />
