@@ -5,7 +5,12 @@
  * Replace them with your own styles or remove the file completely.
  */
 
- // MOVE TO UTKWDS
+// MOVE TO UTKWDS
+
+@font-face {
+	font-family: 'MontserratBlackStatic'; 
+	src: url('MontserratBlackStatic.ttf');
+}
 
 $input-border-color: #949494;
 $input-focus-border-color: #1a73c5;
@@ -213,14 +218,17 @@ button.a-to-z-index-alphabet-letter-button {
 }
 
 .a-to-z-index-section-drop-cap-letter {
-	font-size: 100px;
-	font-weight: var(--wp--custom--font-weight--black);
-	line-height: var(--wp--custom--line-height--heading);
-	color: #ff8200;
 	position: relative;
 	display: inline-block;
+	margin: -18px 0 0;
+	font-family: 'MontserratBlackStatic';
+	font-size: 140px;
+	font-weight: var(--wp--custom--font-weight--black);
+	line-height: 1;
+	color: transparent;
 	text-transform: uppercase;
-	-webkit-text-stroke: 3px #333;
+	-webkit-text-stroke: 3px var(--wp--preset--color--smokey);
+	text-shadow: 4px 0px var(--wp--preset--color--orange);
 }
 
 .a-to-z-index-section-content {
