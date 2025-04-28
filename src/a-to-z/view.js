@@ -152,7 +152,7 @@ export default function View() {
 
     const ChevronUpIcon = () => {
         return (
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                 <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z" />
             </svg>
         );
@@ -250,7 +250,7 @@ export default function View() {
                         </div>
                     )}
                     {isBackToVisible && (
-                        <button className="a-to-z-index-back-to" onClick={scrollToElement}>
+                        <button className="a-to-z-index-back-to" onClick={scrollToElement} aria-label="Back to top" title="Back to top">
                             <ChevronUpIcon />
                         </button>
                     )}
