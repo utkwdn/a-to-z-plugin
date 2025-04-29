@@ -215,7 +215,7 @@ button.a-to-z-index-alphabet-letter-button {
 	position: relative;
 	display: inline-block;
 	font-family: 'MontserratBlackStatic';
-	font-size: 140px;
+	font-size: 85px;
 	line-height: 1;
 	color: transparent;
 	text-transform: uppercase;
@@ -226,6 +226,7 @@ button.a-to-z-index-alphabet-letter-button {
 @media screen and (min-width: 600px) {
 	.a-to-z-index-section-drop-cap-letter {
 		margin: -18px 0 0;
+		font-size: 140px;
 	}
 }
 
