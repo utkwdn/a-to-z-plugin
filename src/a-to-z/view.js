@@ -165,8 +165,8 @@ export default function View() {
                 <div className="a-to-z-index alignwide">
                     <div className="a-to-z-index-input">
                         <div class="form-floating">
-                            <input className="form-control" aria-label="Search the index" id="program-search" name="search" type="search" value={searchTerm} onChange={(e) => handleFilterChange('search', e.target.value, setSearchTerm)} placeholder="Search the index" />
-                            <label for="program-search">Search the index</label>
+                            <input className="form-control" aria-label="Search the index" id="a-to-z-search" name="search" type="search" value={searchTerm} onChange={(e) => handleFilterChange('search', e.target.value, setSearchTerm)} placeholder="Search the index" />
+                            <label for="a-to-z-search">Search the index</label>
                         </div>
                     </div>
                     {isLoading ? (
@@ -221,11 +221,6 @@ export default function View() {
                                 <p>Try searching again with different terms.</p>
                                 <p class="is-style-utkwds-cta-link">
                                     <a href="https://www.utk.edu/">Search all of utk.edu</a>
-                                </p>
-                            </div>
-                            <div className="a-to-z-index-no-results-footer">
-                                <p class="is-style-utkwds-cta-link">
-                                    <a href="https://communications.utk.edu/a-z-index-update-request/">Request an update to the index</a>
                                 </p>
                             </div>
                         </div>
