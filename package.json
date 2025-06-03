@@ -2,7 +2,7 @@
 	"name": "a-to-z",
 	"version": "0.1.0",
 	"description": "A plugin for managing and displaying the A to Z index",
-	"author": "UT OCM",
+	"author": "The University of Tennessee, Knoxville",
 	"license": "GPL-2.0-or-later",
 	"homepage": "https://www.utk.edu",
 	"main": "build/index.js",
