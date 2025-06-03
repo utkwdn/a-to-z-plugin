@@ -1,5 +1,5 @@
 === A to Z ===
-Contributors:      UT OCM
+Contributors:      The University of Tennessee, Knoxville
 Tags:              block
 Tested up to:      6.7
 Stable tag:        0.1.0
