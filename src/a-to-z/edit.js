@@ -31,14 +31,14 @@ import './editor.scss';
  */
 export default function Edit() {
 	// Static JSON data
-    const alphabet = 'ALPHABET#'.split("");
+	const alphabet = 'ALPHABET#'.split( '' );
 	const aToZData = [
 		{
 			letter: 'A',
 			posts: [
 				{ ID: 1, url: '#', title: 'Academic Appeals' },
-                { ID: 2, url: '#', title: 'Academic Calendars' },
-                { ID: 3, url: '#', title: 'Academic Inclusive Initiatives' },
+				{ ID: 2, url: '#', title: 'Academic Calendars' },
+				{ ID: 3, url: '#', title: 'Academic Inclusive Initiatives' },
 			],
 		},
 	];
@@ -46,44 +46,71 @@ export default function Edit() {
 	return (
 		<>
 			<div className="a-to-z-container-banner wp-block-block alignfull utkwds-orange-bar-texture has-orange-background-color has-background" />
-			<div {...useBlockProps()} className="a-to-z-index alignwide" id="alpha">
-				{__(
+			<div
+				{ ...useBlockProps() }
+				className="a-to-z-index alignwide"
+				id="alpha"
+			>
+				{ __(
 					<>
-                        <div className="a-to-z-index-input">
-                            <div class="form-floating">
-                                <input className='form-control' aria-label="Search the index" id="a-to-z-search" name="search" type="search" placeholder="Search the index" />
-                                <label for="a-to-z-search">Search the index</label>
-                            </div>
-                        </div>
-                        <div className="a-to-z-index-alphabet">
-                            {alphabet.map((item) => (
-                                <div className="a-to-z-index-alphabet-letter" key={item}>
-                                    <button
-                                        className="a-to-z-index-alphabet-letter-button"
-                                    >{item}</button>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="a-to-z-index-sections">
-                            {aToZData.map((group) => (
-                                <div key={group.letter} id={group.letter} className="a-to-z-index-section">
-                                    <div className="a-to-z-index-section-drop-cap">
-                                        <div className="a-to-z-index-section-drop-cap-letter">{group.letter}</div>
-                                    </div>
-                                    <div className="a-to-z-index-section-content">
-                                        <ul className="a-to-z-index-section-list">
-                                            {group.posts.map((item) => (
-                                                <li key={item.ID} className="a-to-z-index-section-list-item">
-                                                    <a href={item.url}>{item.title}</a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </>
-				)}
+						<div className="a-to-z-index-input">
+							<div class="form-floating">
+								<input
+									className="form-control"
+									aria-label="Search the index"
+									id="a-to-z-search"
+									name="search"
+									type="search"
+									placeholder="Search the index"
+								/>
+								<label for="a-to-z-search">
+									Search the index
+								</label>
+							</div>
+						</div>
+						<div className="a-to-z-index-alphabet">
+							{ alphabet.map( ( item ) => (
+								<div
+									className="a-to-z-index-alphabet-letter"
+									key={ item }
+								>
+									<button className="a-to-z-index-alphabet-letter-button">
+										{ item }
+									</button>
+								</div>
+							) ) }
+						</div>
+						<div className="a-to-z-index-sections">
+							{ aToZData.map( ( group ) => (
+								<div
+									key={ group.letter }
+									id={ group.letter }
+									className="a-to-z-index-section"
+								>
+									<div className="a-to-z-index-section-drop-cap">
+										<div className="a-to-z-index-section-drop-cap-letter">
+											{ group.letter }
+										</div>
+									</div>
+									<div className="a-to-z-index-section-content">
+										<ul className="a-to-z-index-section-list">
+											{ group.posts.map( ( item ) => (
+												<li
+													key={ item.ID }
+													className="a-to-z-index-section-list-item"
+												>
+													<a href={ item.url }>
+														{ item.title }
+													</a>
+												</li>
+											) ) }
+										</ul>
+									</div>
+								</div>
+							) ) }
+						</div>
+					</>
+				) }
 			</div>
 		</>
 	);
