@@ -1,10 +1,10 @@
 {
 	"name": "a-to-z-plugin",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "A plugin for managing and displaying the A to Z index",
 	"author": "The University of Tennessee, Knoxville",
 	"license": "GPL-2.0-or-later",
-	"homepage": "https://www.utk.edu",
+	"homepage": "https://github.com/utkwdn/a-to-z-plugin",
 	"main": "build/index.js",
 	"scripts": {
 		"build": "wp-scripts build --webpack-copy-php --blocks-manifest",
