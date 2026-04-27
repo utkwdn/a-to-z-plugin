@@ -3,7 +3,7 @@
  * Plugin Name:       A to Z
  * Plugin URI:        https://github.com/utkwdn/a-to-z-plugin
  * Description:       A plugin for managing and displaying the A to Z index
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.7
  * Requires PHP:      7.4
  * Author:            The University of Tennessee, Knoxville

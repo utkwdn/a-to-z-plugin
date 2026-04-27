@@ -1,6 +1,6 @@
 {
 	"name": "a-to-z-plugin",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A plugin for managing and displaying the A to Z index",
 	"author": "The University of Tennessee, Knoxville",
 	"license": "GPL-2.0-or-later",
@@ -16,9 +16,9 @@
 		"start": "wp-scripts start --webpack-copy-php --blocks-manifest"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.14.0",
-		"@wordpress/prettier-config": "^4.22.0",
-		"prettier": "npm:wp-prettier@^3.0.3",
-		"bootstrap": "^5.3.3"
+		"@wordpress/prettier-config": "^4.44.0",
+		"@wordpress/scripts": "^32.0.0",
+		"bootstrap": "^5.3.3",
+		"prettier": "npm:wp-prettier@^3.0.3"
 	}
 }
